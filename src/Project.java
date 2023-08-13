@@ -190,6 +190,11 @@ class LogLog{
         }
 
         // count = (double)totalCountOfMax0s/(double)numberOfBucketsFilled;
+
+        //IMPORTANT!!!! -  According to formula we dont have to divide by num of buckets filled but actually have to divide by TOTAL NUM OF BUCKETS
+        // ALSO WE HAVE TO CALC COUNT AS (2^avgCountOf0s)*Total num of buckets*alpha
+        //I read somewhere that alpha was found out to be 0.7 experimentally
+
         numberOfBucketsFilled = bucketsOfCountOfMax0s.length;
         count = (double)totalCountOfMax0s/(double)numberOfBucketsFilled;
         count = Math.pow(2, count)*numberOfBucketsFilled*0.7;
