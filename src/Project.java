@@ -49,9 +49,9 @@ public class Project {
 
     public static void main(String[] args) throws NoSuchAlgorithmException, IllegalBlockSizeException {
 
-        String[] ips = generateRandomIPAddressArray(4001, 4000);
+        String[] ips = generateRandomIPAddressArray(8001, 1000);
 
-        //bucket size/num of buckets is too big!!! reduce it
+        
 
         //here num of bytes is the num of bytes we want to consider while puting a count of zeros in bucket, ie num of buckets = 2^(numOfBytes*8)
         // due to some reasons I have kept the numOfBytesToConsider = 1 manually since I cant convert the first n bytes i bytes[] b to unsigned int
@@ -60,6 +60,9 @@ public class Project {
             algoObj.addToLogLog(ips[i]);
         }
 
+        //IMPORTANT!!!! -  According to formula we dont have to divide by num of buckets filled but actually have to divide by TOTAL NUM OF BUCKETS
+        // ALSO WE HAVE TO CALC COUNT AS (2^avgCountOf0s)*Total num of buckets*alpha
+        //I read somewhere that alpha was found out to be 0.7 experimentally
         System.out.println(algoObj.getNumOfUniqueElements());
 
 
@@ -196,8 +199,9 @@ class LogLog{
         //I read somewhere that alpha was found out to be 0.7 experimentally
 
         numberOfBucketsFilled = bucketsOfCountOfMax0s.length;
+        double alpha = 0.75;
         count = (double)totalCountOfMax0s/(double)numberOfBucketsFilled;
-        count = Math.pow(2, count)*numberOfBucketsFilled*0.7;
+        count = Math.pow(2, count)*numberOfBucketsFilled*alpha;
 
         return count;
     }
