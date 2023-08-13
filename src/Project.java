@@ -49,7 +49,9 @@ public class Project {
 
     public static void main(String[] args) throws NoSuchAlgorithmException, IllegalBlockSizeException {
 
-        String[] ips = generateRandomIPAddressArray(20, 3);
+        String[] ips = generateRandomIPAddressArray(4001, 4000);
+
+        //bucket size/num of buckets is too big!!! reduce it
 
         //here num of bytes is the num of bytes we want to consider while puting a count of zeros in bucket, ie num of buckets = 2^(numOfBytes*8)
         // due to some reasons I have kept the numOfBytesToConsider = 1 manually since I cant convert the first n bytes i bytes[] b to unsigned int
@@ -177,8 +179,8 @@ class LogLog{
 
         //we need to keep track of buckets that have acctually been filled atleast once i.e bucket[i]!=-1;
         // so that we have a proper denomiator to divide by for average
-        int numberOfBucketsFilled = 0;
-        int totalCountOfMax0s = 0; //this is the total sum of all buckets (excluding buckets that are = -1)
+        long numberOfBucketsFilled = 0;
+        long totalCountOfMax0s = 0; //this is the total sum of all buckets (excluding buckets that are = -1)
         for (int i = 0; i < bucketsOfCountOfMax0s.length; i++) {
 
             if (bucketsOfCountOfMax0s[i]!=-1) {
@@ -187,7 +189,10 @@ class LogLog{
             }
         }
 
+        // count = (double)totalCountOfMax0s/(double)numberOfBucketsFilled;
+        numberOfBucketsFilled = bucketsOfCountOfMax0s.length;
         count = (double)totalCountOfMax0s/(double)numberOfBucketsFilled;
+        count = Math.pow(2, count)*numberOfBucketsFilled*0.7;
 
         return count;
     }
