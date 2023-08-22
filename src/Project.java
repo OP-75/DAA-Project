@@ -49,7 +49,7 @@ public class Project {
 
     public static void main(String[] args) throws NoSuchAlgorithmException, IllegalBlockSizeException {
 
-        String[] ips = generateRandomIPAddressArray(8001, 1000);
+        String[] ips = generateRandomIPAddressArray(10000, 6000);
 
         
 
@@ -157,7 +157,7 @@ class LogLog{
         
         //now lets count the max number of 0s in our binaryStr representation of byte array "b"
         //not we are counting from right to left
-        System.out.println(binaryStr.length() +" ,"+b.length*8+", Bucket indx = "+bucketIndx);
+        // System.out.println(binaryStr.length() +" ,"+b.length*8+", Bucket indx = "+bucketIndx);
         int countOf0s = 0;
         for (int i = binaryStr.length()-1; i >=0 ; i--) {
 
@@ -172,7 +172,7 @@ class LogLog{
         if(countOf0s!=0){
             countOf0s = Math.max(countOf0s, bucketsOfCountOfMax0s[bucketIndx]);
             bucketsOfCountOfMax0s[bucketIndx] = countOf0s;
-            System.out.println("count of 0 = "+countOf0s);
+            // System.out.println("count of 0 = "+countOf0s);
         }
 
     }
