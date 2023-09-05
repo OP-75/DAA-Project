@@ -180,13 +180,12 @@ class LogLog{
 
         //we need to keep track of buckets that have acctually been filled atleast once i.e bucket[i]!=-1;
         // so that we have a proper denomiator to divide by for average
-        long numberOfBucketsFilled = 0;
         long totalCountOfMax0s = 0; //this is the total sum of all buckets (excluding buckets that are = -1)
         for (int i = 0; i < bucketsOfCountOfMax0s.length; i++) {
 
             if (bucketsOfCountOfMax0s[i]!=-1) {
                 totalCountOfMax0s += bucketsOfCountOfMax0s[i];
-                numberOfBucketsFilled++;
+                
             }
         }
 
@@ -197,7 +196,6 @@ class LogLog{
         //I read somewhere that alpha was found out to be 0.7 experimentally
 
         //IMP! numberOfBucketsFilled = m = 256 in our implementation
-        numberOfBucketsFilled = bucketsOfCountOfMax0s.length;
         int m = bucketsOfCountOfMax0s.length; //m= num of buckets
         double alpha = 0.7813;
         
