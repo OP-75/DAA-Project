@@ -90,30 +90,27 @@ public class Project {
 class LogLog{
 
     int[] bucketsOfCountOfMax0s = null;
-    int numOfByteToConsider = 1;
+    
     LogLog(){
-        //here numberOfBytes is the number of bytes to consider while defining the bucketsArr size
-        //ie whether to consider 1, 2, 3 etc num of bytes
-
         
-        int numOfBits = numOfByteToConsider*8;
         this.bucketsOfCountOfMax0s = makeBuckets(numOfBits);
     }
-
+    
     byte[] toHash(String str) throws NoSuchAlgorithmException {
         byte[] hashValue = null;
-
+        
         MessageDigest md = MessageDigest.getInstance("SHA-256");
-
+        
         hashValue = md.digest(str.getBytes());
-
+        
         return  hashValue;
     }
-
-    int[] makeBuckets(int numOfBits){
-
-        if(numOfBits<=0) throw new IllegalArgumentException("Number of bits should be >= 1");
-
+    
+    int[] makeBuckets(){
+        
+        //here numberOfBytesToConsider = 1, then num of bits will be 1*8 then num of buckets will be 2^8 
+        int numOfBits = 8;
+        
         //this func makes buckets of sized 2^numOfBits & initializes them with -1
 
         int size = (int)Math.pow(2, numOfBits);
