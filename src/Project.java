@@ -47,7 +47,7 @@ public class Project {
 
     public static void main(String[] args) throws NoSuchAlgorithmException, IllegalBlockSizeException {
 
-        String[] ips = generateRandomIPAddressArray(30000, 10000);
+        String[] ips = generateRandomIPAddressArray(100000, 60000);
 
         
 
@@ -197,7 +197,7 @@ class LogLog{
 
         //IMP! numberOfBucketsFilled = m = 256 in our implementation
         int m = bucketsOfCountOfMax0s.length; //m= num of buckets
-        double alpha = 0.7813;
+        double alpha = 0.78;
         
         count = (double)totalCountOfMax0s/(double)m;
         count = Math.pow(2, count)*m*alpha;
