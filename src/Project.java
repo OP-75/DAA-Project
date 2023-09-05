@@ -93,7 +93,7 @@ class LogLog{
     
     LogLog(){
         
-        this.bucketsOfCountOfMax0s = makeBuckets(numOfBits);
+        this.bucketsOfCountOfMax0s = makeBuckets();
     }
     
     byte[] toHash(String str) throws NoSuchAlgorithmException {
@@ -110,7 +110,7 @@ class LogLog{
         
         //here numberOfBytesToConsider = 1, then num of bits will be 1*8 then num of buckets will be 2^8 
         int numOfBits = 8;
-        
+
         //this func makes buckets of sized 2^numOfBits & initializes them with -1
 
         int size = (int)Math.pow(2, numOfBits);
@@ -147,9 +147,7 @@ class LogLog{
         }
 
         
-        if(numOfByteToConsider!=1){
-            throw new IllegalBlockSizeException("numOfByteToConsider variable != 1");
-        }
+        
         // System.out.println(Byte.toUnsignedInt(b[0]));
         int bucketIndx = Byte.toUnsignedInt(b[0]);
         
