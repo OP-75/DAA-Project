@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Random;
 
 import javax.crypto.IllegalBlockSizeException;
@@ -47,7 +48,7 @@ public class Project {
 
     public static void main(String[] args) throws NoSuchAlgorithmException, IllegalBlockSizeException {
 
-        String[] ips = generateRandomIPAddressArray(100000, 60000);
+        String[] ips = generateRandomIPAddressArray(1000, 690);
 
         
 
@@ -70,17 +71,118 @@ public class Project {
 
 
 
+        ips = null;
 
-        // String str = generateRandomIPAddress();
-        // System.out.println(str);
-        // System.out.println(Arrays.toString(str.getBytes()));
-        // System.out.println(Arrays.toString(toHash(str)));
-        // System.out.println(toHash(str).length*8+" bits");
+        //lets test the Algo for small cardinalities (0 to 1000):
+        int[] smallValTest = {677, 63, 394, 513, 505, 359, 670, 137, 26, 567, 992, 200, 503, 524, 901, 935, 831, 313, 57, 315, 21, 323, 302, 378, 697, 109, 273, 947, 49, 884, 312, 139, 271, 246, 396, 717, 555, 541, 264, 751, 134, 736, 453, 74, 192, 89, 649, 81, 758, 3, 835, 273, 356, 913, 863, 146, 289, 348, 969, 652, 847, 444, 657, 256, 932, 450, 49, 178, 347, 500, 248, 709, 616, 417, 215, 247, 306, 262, 475, 787, 865, 976, 402, 937, 939, 28, 902, 476, 182, 219, 859, 443, 362, 217, 33, 185, 129, 64, 304, 508};
+        
+        ArrayList<Double> errRateArr = new ArrayList<>();
 
-        // //if we want to make a bucket of 1 byte = 8 bits = 2^8 buckets ie 256 buckets
-        // System.out.println("Value of 0th byte in unsigned int = "+Byte.toUnsignedInt(toHash(str)[0]));
+        for (int actualCardinality : smallValTest) {
+            String[] newIpArr = generateRandomIPAddressArray(actualCardinality+100, actualCardinality);
+            LogLog loglogObj = new LogLog();
+            for (int i = 0; i < newIpArr.length; i++) {
+                loglogObj.addToLogLog(newIpArr[i]);
+            }
+
+            double estimateCardinality = loglogObj.getNumOfUniqueElements();
+            double errorRate = Math.abs(estimateCardinality - actualCardinality)/actualCardinality;
+            errRateArr.add(errorRate);
+            // System.out.println(errorRate+" ,"+estimateCardinality+" , real = "+actualCardinality);
+        }
+
+        double errSum = 0;
+        for (Double err : errRateArr) {
+            errSum += err;
+        }
+
+        System.out.println("Avg error rate for small cardinalities (in percent) = "+errSum*100/errRateArr.size());
 
 
+        //lets test the Algo for large cardinalities (20k to 100k):
+        int[] largeCardinalityTest = {32975, 92360, 24920, 64911, 53426, 67064, 77810, 81144, 57684, 71302, 86453, 81794, 94099, 27743, 91733, 94381, 47239, 79389, 43384, 22623, 42188, 73519, 40379, 69097, 91388, 28514, 23792, 96316, 25219, 96404, 99156, 93864, 32051, 32120, 29557, 58662, 85323, 69108, 47139, 51819, 55891, 42878, 49771, 88340, 93735, 37050, 60750, 23736, 51321, 36944, 38344, 47003, 71037, 80794, 39518, 46121, 46400, 43009, 91441, 86753, 37393, 26564, 91810, 91996, 45443, 67015, 84603, 99666, 61793, 23796, 97425, 29276, 94693, 44489, 35871, 48252, 73914, 26691, 78123, 44837, 56771, 30353, 34120, 23686, 61471, 86287, 28233, 52027, 38681, 54091, 64999, 39879, 85121, 36372, 74648, 68914, 58601, 65233, 48279, 53443};
+        
+        errRateArr = new ArrayList<>();
+
+        for (int actualCardinality : largeCardinalityTest) {
+            String[] newIpArr = generateRandomIPAddressArray(actualCardinality+100, actualCardinality);
+            LogLog loglogObj = new LogLog();
+            for (int i = 0; i < newIpArr.length; i++) {
+                loglogObj.addToLogLog(newIpArr[i]);
+            }
+
+            double estimateCardinality = loglogObj.getNumOfUniqueElements();
+            double errorRate = Math.abs(estimateCardinality - actualCardinality)/actualCardinality;
+            errRateArr.add(errorRate);
+            // System.out.println(errorRate+" ,"+estimateCardinality+" , real = "+actualCardinality);
+        }
+
+        errSum = 0;
+        for (Double err : errRateArr) {
+            errSum += err;
+        }
+
+        System.out.println("Avg error rate for large cardinalities (in percent) = "+errSum*100/errRateArr.size());
+        
+
+        //---------------------------------------------------------------------------
+        
+        //lets test the  Median Algo with Median for small cardinalities (0 to 1000):
+        smallValTest = new int[]{677, 63, 394, 513, 505, 359, 670, 137, 26, 567, 992, 200, 503, 524, 901, 935, 831, 313, 57, 315, 21, 323, 302, 378, 697, 109, 273, 947, 49, 884, 312, 139, 271, 246, 396, 717, 555, 541, 264, 751, 134, 736, 453, 74, 192, 89, 649, 81, 758, 3, 835, 273, 356, 913, 863, 146, 289, 348, 969, 652, 847, 444, 657, 256, 932, 450, 49, 178, 347, 500, 248, 709, 616, 417, 215, 247, 306, 262, 475, 787, 865, 976, 402, 937, 939, 28, 902, 476, 182, 219, 859, 443, 362, 217, 33, 185, 129, 64, 304, 508};
+        
+        errRateArr = new ArrayList<>();
+
+        for (int actualCardinality : smallValTest) {
+            String[] newIpArr = generateRandomIPAddressArray(actualCardinality+100, actualCardinality);
+            SarthakLogLog loglogObj = new SarthakLogLog();
+            for (int i = 0; i < newIpArr.length; i++) {
+                loglogObj.addToLogLog(newIpArr[i]);
+            }
+
+            double estimateCardinality = loglogObj.getNumOfUniqueElements();
+            double errorRate = Math.abs(estimateCardinality - actualCardinality)/actualCardinality;
+            errRateArr.add(errorRate);
+            // System.out.println(errorRate+" ,"+estimateCardinality+" , real = "+actualCardinality);
+        }
+
+        errSum = 0;
+        for (Double err : errRateArr) {
+            errSum += err;
+        }
+
+        System.out.println("Avg error rate for small cardinalities  using Median Algo (in percent) = "+errSum*100/errRateArr.size());
+
+
+        //lets test the Median Algo for large cardinalities (20k to 100k):
+        largeCardinalityTest = new int[]{32975, 92360, 24920, 64911, 53426, 67064, 77810, 81144, 57684, 71302, 86453, 81794, 94099, 27743, 91733, 94381, 47239, 79389, 43384, 22623, 42188, 73519, 40379, 69097, 91388, 28514, 23792, 96316, 25219, 96404, 99156, 93864, 32051, 32120, 29557, 58662, 85323, 69108, 47139, 51819, 55891, 42878, 49771, 88340, 93735, 37050, 60750, 23736, 51321, 36944, 38344, 47003, 71037, 80794, 39518, 46121, 46400, 43009, 91441, 86753, 37393, 26564, 91810, 91996, 45443, 67015, 84603, 99666, 61793, 23796, 97425, 29276, 94693, 44489, 35871, 48252, 73914, 26691, 78123, 44837, 56771, 30353, 34120, 23686, 61471, 86287, 28233, 52027, 38681, 54091, 64999, 39879, 85121, 36372, 74648, 68914, 58601, 65233, 48279, 53443};
+        
+        errRateArr = new ArrayList<>();
+
+        for (int actualCardinality : largeCardinalityTest) {
+            String[] newIpArr = generateRandomIPAddressArray(actualCardinality+100, actualCardinality);
+            SarthakLogLog loglogObj = new SarthakLogLog();
+            for (int i = 0; i < newIpArr.length; i++) {
+                loglogObj.addToLogLog(newIpArr[i]);
+            }
+
+            double estimateCardinality = loglogObj.getNumOfUniqueElements();
+            double errorRate = Math.abs(estimateCardinality - actualCardinality)/actualCardinality;
+            errRateArr.add(errorRate);
+            // System.out.println(errorRate+" ,"+estimateCardinality+" , real = "+actualCardinality);
+        }
+
+        errSum = 0;
+        for (Double err : errRateArr) {
+            errSum += err;
+        }
+
+        System.out.println("Avg error rate for large cardinalities using Median Algo(in percent) = "+errSum*100/errRateArr.size());
+
+        
+
+
+
+        
     }
 
 
