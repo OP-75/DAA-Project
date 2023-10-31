@@ -19,7 +19,7 @@ public class MedianLogLog extends LogLog {
         }
 
         long numberOfBucketsFilled = bucketsOfCountOfMax0s.length;
-        double alpha = 0.7;
+        double alpha = 0.99; //found by trial & err
         double median = myMed.getMedian();
 
         count = Math.pow(2, median)*numberOfBucketsFilled*alpha;

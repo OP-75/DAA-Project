@@ -42,7 +42,7 @@ public class Project {
     }
 
     public static void main(String[] args) throws NoSuchAlgorithmException, IllegalBlockSizeException {
-        String[] ips = generateRandomIPAddressArray(10000, 6900);
+        String[] ips = generateRandomIPAddressArray(300000, 300000);
 
         //here num of bytes is the num of bytes we want to consider while puting a count of zeros in bucket, ie num of buckets = 2^(numOfBytes*8)
         // due to some reasons I have kept the numOfBytesToConsider = 1 manually since I cant convert the first n bytes i bytes[] b to unsigned int
@@ -52,7 +52,8 @@ public class Project {
 
         //my loglog
         // LogLog algoObj = new LogLog();
-        HarmonicMeanLogLog algoObj = new HarmonicMeanLogLog();
+        // TrimmedHM algoObj = new TrimmedHM();
+        MedianLogLog algoObj = new MedianLogLog();
         for (int i = 0; i < ips.length; i++) {
             algoObj.addToLogLog(ips[i]);
         }
@@ -107,7 +108,7 @@ public class Project {
 
         errSum = 0;
         for (Double err : errRateArr) {
-            errSum += err.doubleValue();
+         errSum += err.doubleValue();
         }
         
         System.out.println("Avg error rate for large cardinalities (in percent) = "+errSum*100/errRateArr.size());
@@ -130,6 +131,66 @@ public class Project {
             double estimateCardinality = loglogObj.getNumOfUniqueElements();
             double errorRate = Math.abs(estimateCardinality - actualCardinality)/actualCardinality;
             errRateArr.add(errorRate);
+            
+            // System.out.println(estimateCardinality);
+            // System.out.println(errorRate+" ,"+estimateCardinality+" , real = "+actualCardinality);
+        }
+
+        errSum = 0;
+        for (Double err : errRateArr) {
+            errSum += err.doubleValue();
+        }
+        
+        System.out.println("Avg error rate for small cardinalities using Harmonic Algo (in percent) = "+errSum*100/errRateArr.size());
+
+
+        //let's test the HM Algo for large cardinalities (20k to 100k):
+        largeCardinalityTest = new int[]{32975, 92360, 24920, 64911, 53426, 67064, 77810, 81144, 57684, 71302, 86453, 81794, 94099, 27743, 91733, 94381, 47239, 79389, 43384, 22623, 42188, 73519, 40379, 69097, 91388, 28514, 23792, 96316, 25219, 96404, 99156, 93864, 32051, 32120, 29557, 58662, 85323, 69108, 47139, 51819, 55891, 42878, 49771, 88340, 93735, 37050, 60750, 23736, 51321, 36944, 38344, 47003, 71037, 80794, 39518, 46121, 46400, 43009, 91441, 86753, 37393, 26564, 91810, 91996, 45443, 67015, 84603, 99666, 61793, 23796, 97425, 29276, 94693, 44489, 35871, 48252, 73914, 26691, 78123, 44837, 56771, 30353, 34120, 23686, 61471, 86287, 28233, 52027, 38681, 54091, 64999, 39879, 85121, 36372, 74648, 68914, 58601, 65233, 48279, 53443};
+        
+        errRateArr = new ArrayList<>();
+
+        for (int actualCardinality : largeCardinalityTest) {
+            String[] newIpArr = generateRandomIPAddressArray(actualCardinality+100, actualCardinality);
+            HarmonicMeanLogLog loglogObj = new HarmonicMeanLogLog();
+            for (int i = 0; i < newIpArr.length; i++) {
+                loglogObj.addToLogLog(newIpArr[i]); 
+            }
+
+            double estimateCardinality = loglogObj.getNumOfUniqueElements();
+            double errorRate = Math.abs(estimateCardinality - actualCardinality)/actualCardinality;
+            errRateArr.add(errorRate);
+        }
+
+        errSum = 0;
+        for (Double err : errRateArr) {
+            errSum += err.doubleValue();
+        }
+
+        System.out.println("Avg error rate for large cardinalities using Harmonic Algo(in percent) = "+errSum*100/errRateArr.size());
+        
+        
+        
+        
+        
+        //---------------------------------------------------------------------------
+        
+        //let's test the Trimmed Harmonic Algo for small cardinalities (0 to 1000):
+        smallValTest = new int[]{677, 63, 394, 513, 505, 359, 670, 137, 26, 567, 992, 200, 503, 524, 901, 935, 831, 313, 57, 315, 21, 323, 302, 378, 697, 109, 273, 947, 49, 884, 312, 139, 271, 246, 396, 717, 555, 541, 264, 751, 134, 736, 453, 74, 192, 89, 649, 81, 758, 3, 835, 273, 356, 913, 863, 146, 289, 348, 969, 652, 847, 444, 657, 256, 932, 450, 49, 178, 347, 500, 248, 709, 616, 417, 215, 247, 306, 262, 475, 787, 865, 976, 402, 937, 939, 28, 902, 476, 182, 219, 859, 443, 362, 217, 33, 185, 129, 64, 304, 508};
+        
+        errRateArr = new ArrayList<>();
+
+        for (int actualCardinality : smallValTest) {
+            String[] newIpArr = generateRandomIPAddressArray(actualCardinality+100, actualCardinality);
+            TrimmedHM loglogObj = new TrimmedHM();
+            for (int i = 0; i < newIpArr.length; i++) {
+                loglogObj.addToLogLog(newIpArr[i]);
+            }
+
+            double estimateCardinality = loglogObj.getNumOfUniqueElements();
+            double errorRate = Math.abs(estimateCardinality - actualCardinality)/actualCardinality;
+            errRateArr.add(errorRate);
+            
+            // System.out.println(estimateCardinality);
             // System.out.println(errorRate+" ,"+estimateCardinality+" , real = "+actualCardinality);
         }
 
@@ -139,17 +200,17 @@ public class Project {
         }
         
         
-        System.out.println("Avg error rate for small cardinalities using Harmonic Algo (in percent) = "+errSum*100/errRateArr.size());
+        System.out.println("Avg error rate for small cardinalities using Trimmed Harmonic Algo (in percent) = "+errSum*100/errRateArr.size());
 
 
-        //let's test the Median Algo for large cardinalities (20k to 100k):
+        //let's test the Trimmed HM Algo for large cardinalities (20k to 100k):
         largeCardinalityTest = new int[]{32975, 92360, 24920, 64911, 53426, 67064, 77810, 81144, 57684, 71302, 86453, 81794, 94099, 27743, 91733, 94381, 47239, 79389, 43384, 22623, 42188, 73519, 40379, 69097, 91388, 28514, 23792, 96316, 25219, 96404, 99156, 93864, 32051, 32120, 29557, 58662, 85323, 69108, 47139, 51819, 55891, 42878, 49771, 88340, 93735, 37050, 60750, 23736, 51321, 36944, 38344, 47003, 71037, 80794, 39518, 46121, 46400, 43009, 91441, 86753, 37393, 26564, 91810, 91996, 45443, 67015, 84603, 99666, 61793, 23796, 97425, 29276, 94693, 44489, 35871, 48252, 73914, 26691, 78123, 44837, 56771, 30353, 34120, 23686, 61471, 86287, 28233, 52027, 38681, 54091, 64999, 39879, 85121, 36372, 74648, 68914, 58601, 65233, 48279, 53443};
         
         errRateArr = new ArrayList<>();
 
         for (int actualCardinality : largeCardinalityTest) {
             String[] newIpArr = generateRandomIPAddressArray(actualCardinality+100, actualCardinality);
-            HarmonicMeanLogLog loglogObj = new HarmonicMeanLogLog();
+            TrimmedHM loglogObj = new TrimmedHM();
             for (int i = 0; i < newIpArr.length; i++) {
                 loglogObj.addToLogLog(newIpArr[i]); 
             }
@@ -165,7 +226,7 @@ public class Project {
             errSum += err.doubleValue();
         }
 
-        System.out.println("Avg error rate for large cardinalities using Harmonic Algo(in percent) = "+errSum*100/errRateArr.size());
+        System.out.println("Avg error rate for large cardinalities using Trimmed Harmonic Algo(in percent) = "+errSum*100/errRateArr.size());
 
         //---------------------------------------------------------------------------
         
@@ -184,7 +245,6 @@ public class Project {
             double estimateCardinality = loglogObj.getNumOfUniqueElements();
             double errorRate = Math.abs(estimateCardinality - actualCardinality)/actualCardinality;
             errRateArr.add(errorRate);
-            // System.out.println(errorRate+" ,"+estimateCardinality+" , real = "+actualCardinality);
         }
 
         errSum = 0;
@@ -251,7 +311,7 @@ class LogLog{
         int[] bucketsArr = new int[size];
         //we store the max number of zeros on the right side of the bytes arr [n-1,n-2...] in the bucket (unsigned int)byte[0]  
 
-        Arrays.fill(bucketsArr, -1);
+        Arrays.fill(bucketsArr, 0);
 
         return bucketsArr;
     }
@@ -308,9 +368,9 @@ class LogLog{
         // so that we have a proper denomiator to divide by for average
         long totalCountOfMax0s = 0; //this is the total sum of all buckets (excluding buckets that are = -1)
         for (int i = 0; i < bucketsOfCountOfMax0s.length; i++) {
-            if (bucketsOfCountOfMax0s[i]!=-1) {
-                totalCountOfMax0s += bucketsOfCountOfMax0s[i];
-            }
+            
+            totalCountOfMax0s += bucketsOfCountOfMax0s[i];
+            
         }
 
         // count = (double)totalCountOfMax0s/(double)numberOfBucketsFilled;
@@ -320,8 +380,10 @@ class LogLog{
         //I read somewhere that alpha was found out to be 0.7 experimentally
 
         //IMP! numberOfBucketsFilled = m = 256 in our implementation
-        int m = bucketsOfCountOfMax0s.length; //m= num of buckets
-        double alpha = 0.78;
+        double m = bucketsOfCountOfMax0s.length; //m= num of buckets
+        
+        // double alpha = 1;
+        double alpha = 0.79;
         
         count = (double)totalCountOfMax0s/(double)m;
         count = Math.pow(2, count)*m*alpha;
