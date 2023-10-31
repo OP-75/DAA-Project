@@ -56,7 +56,7 @@ public class Project {
         // due to some reasons I have kept the numOfBytesToConsider = 1 manually since I cant convert the first n bytes i bytes[] b to unsigned int
 
         //sarthaks loglog
-        // SarthakLogLog algoObj = new SarthakLogLog();
+        // MedianLogLog algoObj = new MedianLogLog();
 
         //my loglog
         // LogLog algoObj = new LogLog();
@@ -94,9 +94,10 @@ public class Project {
 
         double errSum = 0;
         for (Double err : errRateArr) {
-            errSum += err;
+            errSum += err.doubleValue();
         }
 
+        
         System.out.println("Avg error rate for small cardinalities (in percent) = "+errSum*100/errRateArr.size());
 
 
@@ -120,7 +121,7 @@ public class Project {
 
         errSum = 0;
         for (Double err : errRateArr) {
-            errSum += err;
+            errSum += err.doubleValue();
         }
         
         System.out.println("Avg error rate for large cardinalities (in percent) = "+errSum*100/errRateArr.size());
@@ -148,9 +149,10 @@ public class Project {
 
         errSum = 0;
         for (Double err : errRateArr) {
-            errSum += err;
+            errSum += err.doubleValue();
         }
-
+        
+        
         System.out.println("Avg error rate for small cardinalities using Harmonic Algo (in percent) = "+errSum*100/errRateArr.size());
 
 
@@ -174,7 +176,7 @@ public class Project {
 
         errSum = 0;
         for (Double err : errRateArr) {
-            errSum += err;
+            errSum += err.doubleValue();
         }
 
         System.out.println("Avg error rate for large cardinalities using Harmonic Algo(in percent) = "+errSum*100/errRateArr.size());
@@ -190,7 +192,7 @@ public class Project {
 
         for (int actualCardinality : smallValTest) {
             String[] newIpArr = generateRandomIPAddressArray(actualCardinality+100, actualCardinality);
-            SarthakLogLog loglogObj = new SarthakLogLog();
+            MedianLogLog loglogObj = new MedianLogLog();
             for (int i = 0; i < newIpArr.length; i++) {
                 loglogObj.addToLogLog(newIpArr[i]);
             }
@@ -203,7 +205,7 @@ public class Project {
 
         errSum = 0;
         for (Double err : errRateArr) {
-            errSum += err;
+            errSum += err.doubleValue();
         }
 
         System.out.println("Avg error rate for small cardinalities  using Median Algo (in percent) = "+errSum*100/errRateArr.size());
@@ -216,7 +218,7 @@ public class Project {
 
         for (int actualCardinality : largeCardinalityTest) {
             String[] newIpArr = generateRandomIPAddressArray(actualCardinality+100, actualCardinality);
-            SarthakLogLog loglogObj = new SarthakLogLog();
+            MedianLogLog loglogObj = new MedianLogLog();
             for (int i = 0; i < newIpArr.length; i++) {
                 loglogObj.addToLogLog(newIpArr[i]);
             }
@@ -229,7 +231,7 @@ public class Project {
 
         errSum = 0;
         for (Double err : errRateArr) {
-            errSum += err;
+            errSum += err.doubleValue();
         }
 
         System.out.println("Avg error rate for large cardinalities using Median Algo(in percent) = "+errSum*100/errRateArr.size());
